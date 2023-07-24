@@ -1,0 +1,48 @@
+<html>
+
+<head>
+  <title>Upload Progress</title>
+  <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+
+<body>
+  <div class="progress-bar"></div>
+  <div id="progress"></div>
+  <script>
+    var complete = false;
+    var progress = document.getElementById('progress');
+    var progressBar = document.querySelector('.progress-bar');
+    const query = new URLSearchParams(window.location.search);
+    const downloadLink = window.location.origin + "/videos/" + query.get('filename') + ".mp4";
+    let link = document.createElement('a');
+    link.href =  downloadLink;
+    link.textContent = downloadLink;
+    let linkText = document.createElement('div');
+    linkText.textContent = "Ready: ";
+    linkText.appendChild(link);
+
+    const progressInterval = setInterval(function () {
+      fetch(window.location.origin + '/progress')
+        .then(response => response.json())
+        .then(data => {
+          progressBar.style.width = parseInt(data.progress) + "%";
+          if (parseInt(data.progress) === 100) { 
+            clearInterval(progressInterval); 
+          };
+          if (parseInt(data.progress) < 100) {
+            return progress.textContent = data.progress
+          } else {
+            progress.textContent = '';
+            return progress.appendChild(linkText)
+          }
+        })
+        .catch(e => {
+          clearInterval(progressInterval);
+          return console.error('could not fetch: ', e);
+        });
+    }, 1000)
+
+  </script>
+</body>
+
+</html>

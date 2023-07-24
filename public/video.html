@@ -1,0 +1,55 @@
+<html>
+
+<head>
+    <title>Video</title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+
+<body class="video">
+    <h1>Upload and Format Video</h1>
+    <div>
+        <form id="videoUploadForm" action="/format" method="post" enctype="multipart/form-data">
+            <fieldset>
+                <legend>Upload Files</legend>
+                <div class="error"></div>
+                <label id="fileField">File: <input id="video" name="video" type='file' class="file" /></label>
+                <label>Name: <input id="name" name="name" placeholder="name" /></label>   
+                <label>Format:
+                    <select name="format">
+                        <option value="320x240">320x240</option>
+                        <option value="640x480">640x480</option>
+                        <option value="1280x720">1280x720</option>
+                        <option value="1440x1080">1440x1080</option>
+                    </select>
+                </label>
+                <button type="submit">Upload Video</button>
+            </fieldset>
+        </form>
+    </div>
+    <script>
+        const videoUploadField = document.getElementById('videoUploadForm');
+        const validate = function() {
+            if (document.getElementById('video').value === '') {
+                const errorDisplay = document.querySelector('.error');
+                errorDisplay.textContent = 'Video file is required.';
+                errorDisplay.style.display = 'inline-block';
+                document.getElementById('fileField').classList.add('input-error');
+                return false;
+            }
+            clearError();
+            videoUploadField.action = '/format?filename=' + document.getElementById('name').value.replace(/\s/g, '');
+            return true;
+        };
+        const clearError = function() {
+            const errorDisplay = document.querySelector('.error');
+            errorDisplay.textContent = '';
+            errorDisplay.style.display = 'none';
+            document.getElementById('fileField').classList.remove('input-error');
+        }
+        document.getElementById('video').onfocus = clearError;
+        document.getElementById('video').onclick = clearError;
+        document.getElementById('videoUploadForm').onsubmit = validate;
+    </script>
+</body>
+
+</html>
